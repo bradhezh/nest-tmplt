@@ -1,0 +1,15 @@
+{
+  "entryPoints": [
+    "src"
+  ],
+  "entryPointStrategy": "expand",
+  "exclude": [
+    "**/index.ts",
+    "**/app.ts",
+    "**/express.d.ts",
+    "**/*.test.*"
+  ],
+  "out": "../docs/backend",
+  "customCss": "../doc.css",
+  "customJs": "../doc.js"
+}

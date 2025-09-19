@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+
+    "baseUrl": "..",
+    "paths": {
+      "@/*": ["backend/src/*"],
+      "@PrismaClient/*": ["backend/prisma/client/*"],
+      "@shared/*": ["shared/src/*"]
+    }
+  },
+  "include": ["src"]
+  // don't include "shared" as references, which will cause it to be transpiled
+  // as a standalone one with its own tsconfig.json, and then tsc-alias can't
+  // resolve path aliases for it; it's also unnecessary when using a bundler
+  // like tsup
+}

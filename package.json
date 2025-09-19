@@ -1,0 +1,22 @@
+{
+  "name": "monorepo-tmplt",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "scripts": {
+    "migrate": "pnpm --filter backend migrate",
+    "migrate:reset": "pnpm --filter backend migrate:reset",
+    "copy-dist": "pnpm dlx rimraf backend/dist && pnpm dlx cpx \"frontend/dist/**/*\" backend/dist",
+    "build": "pnpm -r build && pnpm copy-dist",
+    "start": "pnpm --filter backend start",
+    "start:debug": "pnpm --filter backend start:debug",
+    "test": "pnpm -r test",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "lint": "pnpm -r lint",
+    "docs": "pnpm dlx rimraf docs && pnpm -r docs && pnpm dlx cpx \"doc.{html,css}\" docs && pnpm dlx renamer --find \"doc\" --replace \"index\" docs/doc.html"
+  },
+  "packageManager": "pnpm@10.10.0"
+}

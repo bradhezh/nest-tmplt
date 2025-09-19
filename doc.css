@@ -1,0 +1,20 @@
+body {
+  font-family: 'Lucida Grande', sans-serif;
+}
+
+code, pre {
+  font-family: Monaco, monospace;
+}
+
+.tsd-signature {
+  font-family: Monaco, monospace;
+  line-height: 180%;
+}
+
+ul.tsd-parameter-list, ul.tsd-type-parameter-list {
+  line-height: 200%;
+}
+
+ul.tsd-parameter-list .tsd-typography p, ul.tsd-type-parameter-list .tsd-typography p {
+  margin-top: 0;
+}

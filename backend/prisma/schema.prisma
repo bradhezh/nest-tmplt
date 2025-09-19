@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "client"
+}
+
+generator zod {
+  provider    = "zod-prisma"
+  output      = "../../shared/src/schemas/prisma"
+  modelCase   = "camelCase"
+  modelSuffix = "Schema"
+  imports     = "../../shared/src/conf"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  /// @zod.coerce
+  id          Int       @id @default(autoincrement())
+  /// @zod.coerce
+  createdAt   DateTime  @default(now())
+  /// @zod.coerce
+  updatedAt   DateTime?
+  /// @zod.min(imports.default.NAME_MIN).max(imports.default.NAME_MAX).regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {message: imports.MESSAGE.INV_NAME})
+  username    String    @unique
+  /// @zod.min(imports.default.PASSWD_MIN).max(imports.default.PASSWD_MAX).regex(/[A-Za-z]/, {message: imports.MESSAGE.INV_PASSWD_LETTER_REQUIRED}).regex(/[0-9]/, {message: imports.MESSAGE.INV_PASSWD_DIGIT_REQUIRED})
+  password    String
+  /// @zod.email()
+  email       String    @unique
+  // inverse side of 1:1 (must be optional)
+  profile     Profile?
+  // m:n
+  roles       Role[]
+  // 1:m
+  items       Item[]
+}
+
+model Profile {
+  /// @zod.coerce
+  id          Int       @id @default(autoincrement())
+  /// @zod.coerce
+  createdAt   DateTime  @default(now())
+  /// @zod.coerce
+  updatedAt   DateTime?
+  /// @zod.min(1).max(imports.default.DISPLAYED_NAME_MAX)
+  name        String
+  // owning side of 1:1 (unique)
+  username    String    @unique
+  user        User      @relation(fields: [username], references: [username], onDelete: Cascade)
+}
+
+model Role {
+  /// @zod.coerce
+  id          Int       @id @default(autoincrement())
+  /// @zod.coerce
+  createdAt   DateTime  @default(now())
+  /// @zod.coerce
+  updatedAt   DateTime?
+  /// @zod.custom(z.enum(imports.default.ROLES))
+  name        String    @unique
+  // m:n
+  users       User[]
+}
+
+model Item {
+  /// @zod.coerce
+  id          Int       @id @default(autoincrement())
+  /// @zod.coerce
+  createdAt   DateTime  @default(now())
+  /// @zod.coerce
+  updatedAt   DateTime?
+  /// @zod.min(imports.default.NAME_MIN).max(imports.default.NAME_MAX).regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {message: imports.MESSAGE.INV_NAME})
+  name        String
+  /// @zod.coerce.nonnegative()
+  price       Decimal   @db.Decimal(10, 2)
+  // m:1
+  username    String
+  user        User      @relation(fields: [username], references: [username], onDelete: Cascade)
+
+  @@unique([username, name])
+}

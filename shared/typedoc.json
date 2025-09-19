@@ -1,0 +1,12 @@
+{
+  "entryPoints": [
+    "src"
+  ],
+  "entryPointStrategy": "expand",
+  "exclude": [
+    "**/*.test.*"
+  ],
+  "out": "../docs/shared",
+  "customCss": "../doc.css",
+  "customJs": "../doc.js"
+}

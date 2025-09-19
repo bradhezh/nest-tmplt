@@ -1,0 +1,15 @@
+{
+  "entryPoints": [
+    "src"
+  ],
+  "entryPointStrategy": "expand",
+  "exclude": [
+    "**/main.tsx",
+    "**/setupTests.ts",
+    "**/vite-env.d.ts",
+    "**/*.test.*"
+  ],
+  "out": "../docs/frontend",
+  "customCss": "../doc.css",
+  "customJs": "../doc.js"
+}

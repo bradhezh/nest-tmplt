@@ -1,0 +1,9 @@
+// won't be transpiled as a standalone one, only to help ide intellisense
+{
+  "extends": "../backend/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {"@shared/*": ["src/*"]}
+  },
+  "include": ["src"]
+}

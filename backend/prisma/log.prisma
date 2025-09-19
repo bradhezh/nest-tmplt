@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "client/log"
+}
+
+datasource db {
+  provider  = "mongodb"
+  url       = env("DB_URL_LOG")
+  directUrl = env("DB_URL_LOG_DIRECT")
+}
+
+enum LogType {
+  INFO
+  DEBUG
+  ERROR
+}
+
+model Log {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  timestamp DateTime  @default(now())
+  type      LogType
+  message   String
+}
