@@ -1,8 +1,8 @@
 import {z} from 'zod'
 
-import {MESSAGE} from '@shared/const'
 import {
-  incsSchema, pageSchema, filterSchema, FilterWithOpOr, listSchema,
+  incsSchema, pageSchema,
+  filterSchema, FilterWithOp, updateSchema, UpdateWithOp, listSchema,
 } from '@shared/schemas/base'
 import {profSchemaResNoRelated, roleSchemaResNoRelated} from '@shared/schemas'
 import {userSchema} from '@shared/schemas/prisma'
@@ -16,7 +16,7 @@ const relsRes = () => ({
   profile: profSchemaResNoRelated.nullish(),
   roles: roleSchemaResNoRelated.array().optional(),
 } as const)
-const resRels = ['profile', 'roles']
+const resRels = ['profile', 'roles'] as const
 
 type ResField = Exclude<keyof typeof userSchema.shape, typeof excludes[number]>
 const resFields = Object.keys(userSchema.shape).filter(
@@ -60,18 +60,17 @@ type Inc = keyof ReturnType<typeof relsRes>
 /** Type of user's "includes". */
 export type UserIncs = [Inc, ...Inc[]] | undefined
 
-/** Zod schema for user's "page", including pagination, order, and "includes".
-*/
-export const userSchemaPage = pageSchema(resFields).merge(userSchemaIncs)
-/** Type of user's "page", including pagination, order, and "includes". */
+/** Zod schema for user's "page", including pagination and order. */
+export const userSchemaPage = pageSchema(resFields)
+/** Type of user's "page", including pagination and order. */
 export type UserPage =
-  z.infer<typeof userSchemaPage> & {orderBy?: ResField} & {includes?: UserIncs}
+  z.infer<typeof userSchemaPage>['page'] & {orderBy?: ResField}
 
 /** Zod schema for user's "filter". */
 export const userSchemaFilter =
   filterSchema('users', resFields, userSchema.shape)
 /** Type of user's "filter". */
-export type UserFilter = FilterWithOpOr<z.infer<typeof resSchema>>
+export type UserFilter = FilterWithOp<z.infer<typeof resSchema>>
 
 /** Zod schema for user's "data", typically for creation. */
 export const userSchemaData = z.object({
@@ -83,30 +82,32 @@ export const userSchemaData = z.object({
 /** Type of user's "data", typically for creation. */
 export type UserData = z.infer<typeof userSchemaData>['user']
 
-/** Zod schema for user's "partial data", typically for updating. */
-export const userSchemaDataOpt = z.object({
-  user: userSchemaData.shape.user.omit(userOmit).partial()
-    .refine(d => Object.keys(d).length, {message: MESSAGE.INV_DATAOPT})
-    .nullish(),
-})
-/** Type of user's "partial data", typically for updating. */
-export type UserDataOpt = z.infer<typeof userSchemaDataOpt>['user']
+/** Zod schema for user's "update data". */
+export const userSchemaUpdate = updateSchema('user',
+  Object.keys(userSchemaData.shape.user.omit(userOmit).shape), userSchema.shape)
+/** Type of user's "update data". */
+export type UserUpdate = UpdateWithOp<
+  Omit<z.infer<typeof resSchema>, typeof autos[number] | typeof fkeys[number]>>
 
 /** Zod schema for "password". */
 export const passwdSchema = z.object({
-  old: userSchema.shape.password,
-  new: userSchema.shape.password,
+  password: z.object({
+    old: userSchema.shape.password,
+    new: userSchema.shape.password,
+  })
 })
 /** Type of "password". */
-export type Password = z.infer<typeof passwdSchema>
+export type Password = z.infer<typeof passwdSchema>['password']
 
 /** Zod schema for "credential". */
-export const credentialSchema = userSchema.pick({
-  username: true,
-  password: true,
+export const credentialSchema = z.object({
+  credential: userSchema.pick({
+    username: true,
+    password: true,
+  })
 })
 /** Type of "credential". */
-export type Credential = z.infer<typeof credentialSchema>
+export type Credential = z.infer<typeof credentialSchema>['credential']
 
 /** Zod schema for the "user" response without any relations. */
 export const userSchemaResNoRelated = resSchema

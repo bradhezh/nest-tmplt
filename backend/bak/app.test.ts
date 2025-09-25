@@ -1,7 +1,7 @@
 import supertest from 'supertest'
 import TestAgent from 'supertest/lib/agent'
 
-import {HTTP_STATUS, MESSAGE} from '@/const'
+import {message} from '@/const'
 import conf from '@/conf'
 import log from '@/utils/log'
 import usersSvc from '@/services/users'

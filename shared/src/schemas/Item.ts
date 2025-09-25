@@ -1,8 +1,8 @@
 import {z} from 'zod'
 
-import {MESSAGE} from '@shared/const'
 import {
-  incsSchema, pageSchema, filterSchema, FilterWithOpOr, listSchema,
+  incsSchema, pageSchema,
+  filterSchema, FilterWithOp, updateSchema, UpdateWithOp, listSchema,
 } from '@shared/schemas/base'
 import {userSchemaResNoRelated} from '@shared/schemas'
 import {itemSchema} from '@shared/schemas/prisma'
@@ -13,7 +13,7 @@ const fkeys = ['username'] as const
 // response of relations possibly included; note that for :m relationships, the
 // count of included one should be controllable since no pagination for it
 const relsRes = () => ({user: userSchemaResNoRelated.optional()} as const)
-const resRels = ['user']
+const resRels = ['user'] as const
 
 type ResField = Exclude<keyof typeof itemSchema.shape, typeof excludes[number]>
 const resFields = Object.keys(itemSchema.shape).filter(
@@ -31,16 +31,18 @@ export type ItemName = z.infer<typeof itemSchemaName>['name']
 
 /** Zod schema for item's "key". */
 export const itemSchemaKey = z.object({
-  item: z.union([itemSchema.pick({id: true}), itemSchema.pick({name: true})])
-    .nullish(),
+  item: z.union([
+    itemSchema.pick({id: true}), itemSchema.pick({username: true, name: true}),
+  ]).nullish(),
 })
 /** Type of item's "key". */
 export type ItemKey = z.infer<typeof itemSchemaKey>['item']
 
 /** Zod schema for item's "keys". */
 export const itemSchemaKeys = z.object({
-  items: z.union([itemSchema.pick({id: true}), itemSchema.pick({name: true})])
-    .array().nonempty().nullish(),
+  items: z.union([
+    itemSchema.pick({id: true}), itemSchema.pick({username: true, name: true}),
+  ]).array().nonempty().nullish(),
 })
 /** Type of item's "keys". */
 export type ItemKeys = z.infer<typeof itemSchemaKeys>['items']
@@ -51,18 +53,17 @@ type Inc = keyof ReturnType<typeof relsRes>
 /** Type of item's "includes". */
 export type ItemIncs = [Inc, ...Inc[]] | undefined
 
-/** Zod schema for item's "page", including pagination, order, and "includes".
-*/
-export const itemSchemaPage = pageSchema(resFields).merge(itemSchemaIncs)
-/** Type of item's "page", including pagination, order, and "includes". */
+/** Zod schema for item's "page", including pagination and order. */
+export const itemSchemaPage = pageSchema(resFields)
+/** Type of item's "page", including pagination and order. */
 export type ItemPage =
-  z.infer<typeof itemSchemaPage> & {orderBy?: ResField} & {includes?: ItemIncs}
+  z.infer<typeof itemSchemaPage>['page'] & {orderBy?: ResField}
 
 /** Zod schema for item's "filter". */
 export const itemSchemaFilter =
   filterSchema('items', resFields, itemSchema.shape)
 /** Type of item's "filter". */
-export type ItemFilter = FilterWithOpOr<z.infer<typeof resSchema>>
+export type ItemFilter = FilterWithOp<z.infer<typeof resSchema>>
 
 /** Zod schema for item's "data", typically for creation. */
 export const itemSchemaData = z.object({
@@ -74,15 +75,12 @@ export const itemSchemaData = z.object({
 /** Type of item's "data", typically for creation. */
 export type ItemData = z.infer<typeof itemSchemaData>['item']
 
-// todo: add ops like "increment" and "decrement" in the similar way as "filter"
-/** Zod schema for item's "partial data", typically for updating. */
-export const itemSchemaDataOpt = z.object({
-  item: itemSchemaData.shape.item.omit(itemOmit).partial()
-    .refine(d => Object.keys(d).length, {message: MESSAGE.INV_DATAOPT})
-    .nullish(),
-})
-/** Type of item's "partial data", typically for updating. */
-export type ItemDataOpt = z.infer<typeof itemSchemaDataOpt>['item']
+/** Zod schema for item's "update data". */
+export const itemSchemaUpdate = updateSchema('item',
+  Object.keys(itemSchemaData.shape.item.omit(itemOmit).shape), itemSchema.shape)
+/** Type of item's "update data". */
+export type ItemUpdate = UpdateWithOp<
+  Omit<z.infer<typeof resSchema>, typeof autos[number] | typeof fkeys[number]>>
 
 /** Zod schema for the "item" response without any relations. */
 export const itemSchemaResNoRelated = resSchema

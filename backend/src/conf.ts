@@ -1,4 +1,5 @@
 import dotenv from 'dotenv'
+import path from 'path'
 
 import common from '@shared/conf'
 
@@ -9,48 +10,53 @@ const conf = {
   ...common,
 
   /** Should be set in the CLI. */
-  NODE_ENV: process.env.NODE_ENV!,
+  env: process.env.NODE_ENV!,
 
   /** Flexible or sensitive configuration included in .env: should be set in the
     cloud but unnecessary in CICD pipelines. */
-  SECRET: process.env.SECRET || 'alskjfeoicvinef',
+  secret: process.env.SECRET || 'alskjfeoicvinef',
   /** Flexible or sensitive configuration included in .env: normally will be
     automatically set by cloud platforms, so unnecessary to be set in both the
     cloud and CICD pipelines. */
-  PORT: Number(process.env.PORT) || 3000,
+  port: Number(process.env.PORT) || 3000,
   /** Flexible or sensitive configuration included in .env: should be set in the
     cloud but unnecessary in CICD pipelines. */
-  SALT: Number(process.env.SALT) || 5,
+  salt: Number(process.env.SALT) || 5,
   /** Flexible or sensitive configuration included in .env: should be set in the
     cloud but unnecessary in CICD pipelines. */
-  INI_ADMIN: process.env.INI_ADMIN || 'admin',
+  iniAdmin: process.env.INI_ADMIN || 'admin',
   /** Flexible or sensitive configuration included in .env: should be set in the
     cloud but unnecessary in CICD pipelines. */
-  DEF_PASSWD: process.env.DEF_PASSWD || '888888',
+  defPasswd: process.env.DEF_PASSWD || '123abc',
   /** Flexible or sensitive configuration included in .env: should be set in the
     cloud but unnecessary in CICD pipelines. */
-  TOKEN_EXPIRE: Number(process.env.TOKEN_EXPIRE) || 604800,
+  tokenExpire: Number(process.env.TOKEN_EXPIRE) || 604800,
 
-  VER_EP: '/version',
-  VERSION: 0,
+  version: {
+    no: 0,
+    ep: '/version',
+  },
 
-  DIST_DIR: 'dist',
+  dist: 'dist',
+  index: 'index.html',
 
-  PERM: {
-    ACTION: {
-      READ: 'read',
-      CREATE: 'create',
-      UPDATE: 'update',
-      DELETE: 'delete',
-      RESET_PASSWD: 'resetPassword',
-      SET_ROLE: 'setRole',
+  perm: {
+    action: {
+      manage: 'manage',
+      read: 'read',
+      create: 'create',
+      update: 'update',
+      delete: 'delete',
+      resetPasswd: 'resetPasswd',
+      setRole: 'setRole',
     },
-    SUBJECT: {
-      USER: 'user',
-      PROFILE: 'profile',
-      ROLE: 'role',
-      ITEM: 'item',
-      USER_ROLE: 'user_role',
+    subject: {
+      all: 'all',
+      user: 'user',
+      profile: 'profile',
+      role: 'role',
+      item: 'item',
+      user_role: 'user_role',
     },
   },
 } as const
@@ -66,5 +72,5 @@ const conf = {
   pipelines (only) for testing. */
 export default {
   ...conf,
-  SPA: `${conf.DIST_DIR}/index.html`,
+  spa: path.join(conf.dist, conf.index),
 } as const

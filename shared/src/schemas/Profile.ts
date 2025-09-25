@@ -1,8 +1,8 @@
 import {z} from 'zod'
 
-import {MESSAGE} from '@shared/const'
 import {
-  incsSchema, pageSchema, filterSchema, FilterWithOpOr, listSchema,
+  incsSchema, pageSchema,
+  filterSchema, FilterWithOp, updateSchema, UpdateWithOp, listSchema,
 } from '@shared/schemas/base'
 import {userSchemaResNoRelated} from '@shared/schemas'
 import {profileSchema} from '@shared/schemas/prisma'
@@ -13,7 +13,7 @@ const fkeys = ['username'] as const
 // response of relations possibly included; note that for :m relationships, the
 // count of included one should be controllable since no pagination for it
 const relsRes = () => ({user: userSchemaResNoRelated.optional()} as const)
-const resRels = ['user']
+const resRels = ['user'] as const
 
 type ResField =
   Exclude<keyof typeof profileSchema.shape, typeof excludes[number]>
@@ -54,18 +54,17 @@ type Inc = keyof ReturnType<typeof relsRes>
 /** Type of profile's "includes". */
 export type ProfIncs = [Inc, ...Inc[]] | undefined
 
-/** Zod schema for profile's "page", including pagination, order, and
-  "includes". */
-export const profSchemaPage = pageSchema(resFields).merge(profSchemaIncs)
-/** Type of profile's "page", including pagination, order, and "includes". */
+/** Zod schema for profile's "page", including pagination and order. */
+export const profSchemaPage = pageSchema(resFields)
+/** Type of profile's "page", including pagination and order. */
 export type ProfPage =
-  z.infer<typeof profSchemaPage> & {orderBy?: ResField} & {includes?: ProfIncs}
+  z.infer<typeof profSchemaPage>['page'] & {orderBy?: ResField}
 
 /** Zod schema for profile's "filter". */
 export const profSchemaFilter =
   filterSchema('profiles', resFields, profileSchema.shape)
 /** Type of profile's "filter". */
-export type ProfFilter = FilterWithOpOr<z.infer<typeof resSchema>>
+export type ProfFilter = FilterWithOp<z.infer<typeof resSchema>>
 
 /** Zod schema for profile's "data", typically for creation. */
 export const profSchemaData = z.object({
@@ -77,14 +76,13 @@ export const profSchemaData = z.object({
 /** Type of profile's "data", typically for creation. */
 export type ProfData = z.infer<typeof profSchemaData>['profile']
 
-/** Zod schema for profile's "partial data", typically for updating. */
-export const profSchemaDataOpt = z.object({
-  profile: profSchemaData.shape.profile.omit(profOmit).partial()
-    .refine(d => Object.keys(d).length, {message: MESSAGE.INV_DATAOPT})
-    .nullish(),
-})
-/** Type of profile's "partial data", typically for updating. */
-export type ProfDataOpt = z.infer<typeof profSchemaDataOpt>['profile']
+/** Zod schema for profile's "update data". */
+export const profSchemaUpdate = updateSchema('profile',
+  Object.keys(profSchemaData.shape.profile.omit(profOmit).shape),
+  profileSchema.shape)
+/** Type of profile's "update data". */
+export type ProfUpdate = UpdateWithOp<
+  Omit<z.infer<typeof resSchema>, typeof autos[number] | typeof fkeys[number]>>
 
 /** Zod schema for the "profile" response without any relations. */
 export const profSchemaResNoRelated = resSchema

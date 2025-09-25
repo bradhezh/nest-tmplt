@@ -8,7 +8,7 @@ const prisma = new PrismaClient().$extends(withAccelerate())
 
 void (async () => {
   try {
-    for (const role of conf.ROLES) {
+    for (const role of conf.roles) {
       await prisma.role.upsert({
         where: {name: role},
         update: {},
@@ -16,15 +16,15 @@ void (async () => {
       })
     }
 
-    const password = await bcrypt.hash(conf.DEF_PASSWD, conf.SALT)
+    const password = await bcrypt.hash(conf.defPasswd, conf.salt)
     await prisma.user.upsert({
-      where: {username: conf.INI_ADMIN},
+      where: {username: conf.iniAdmin},
       update: {},
       create: {
-        username: conf.INI_ADMIN,
+        username: conf.iniAdmin,
         password,
         email: 'admin@domain',
-        roles: {connect: {name: conf.ROLE.ADMIN}},
+        roles: {connect: {name: conf.role.admin}},
       },
     })
   } catch (err) {

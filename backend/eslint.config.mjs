@@ -3,7 +3,7 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config({
-  ignores: ['dist', 'build', '**/prisma/client'],
+  ignores: ['dist', 'build', '**/prisma/client', 'bak'],
 }, {
   extends: [js.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
   files: ['**/*.ts'],

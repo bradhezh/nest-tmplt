@@ -1,8 +1,8 @@
 import {z} from 'zod'
 
-import {MESSAGE} from '@shared/const'
 import {
-  incsSchema, pageSchema, filterSchema, FilterWithOpOr, listSchema,
+  incsSchema, pageSchema,
+  filterSchema, FilterWithOp, updateSchema, UpdateWithOp, listSchema,
 } from '@shared/schemas/base'
 import {roleSchema} from '@shared/schemas/prisma'
 
@@ -12,7 +12,7 @@ const fkeys = [] as const
 // response of relations possibly included; note that for :m relationships, the
 // count of included one should be controllable since no pagination for it
 const relsRes = () => ({} as const)
-const resRels = [] as string[]
+const resRels = [] as const
 
 type ResField = Exclude<keyof typeof roleSchema.shape, typeof excludes[number]>
 const resFields = Object.keys(roleSchema.shape).filter(
@@ -50,18 +50,17 @@ type Inc = keyof ReturnType<typeof relsRes>
 /** Type of role's "includes". */
 export type RoleIncs = [Inc, ...Inc[]] | undefined
 
-/** Zod schema for role's "page", including pagination, order, and "includes".
-*/
-export const roleSchemaPage = pageSchema(resFields).merge(roleSchemaIncs)
-/** Type of role's "page", including pagination, order, and "includes". */
+/** Zod schema for role's "page", including pagination and order. */
+export const roleSchemaPage = pageSchema(resFields)
+/** Type of role's "page", including pagination and order. */
 export type RolePage =
-  z.infer<typeof roleSchemaPage> & {orderBy?: ResField} & {includes?: RoleIncs}
+  z.infer<typeof roleSchemaPage>['page'] & {orderBy?: ResField}
 
 /** Zod schema for role's "filter". */
 export const roleSchemaFilter =
   filterSchema('roles', resFields, roleSchema.shape)
 /** Type of role's "filter". */
-export type RoleFilter = FilterWithOpOr<z.infer<typeof resSchema>>
+export type RoleFilter = FilterWithOp<z.infer<typeof resSchema>>
 
 /** Zod schema for role's "data", typically for creation. */
 export const roleSchemaData = z.object({
@@ -73,14 +72,12 @@ export const roleSchemaData = z.object({
 /** Type of role's "data", typically for creation. */
 export type RoleData = z.infer<typeof roleSchemaData>['role']
 
-/** Zod schema for role's "partial data", typically for updating. */
-export const roleSchemaDataOpt = z.object({
-  role: roleSchemaData.shape.role.omit(roleOmit).partial()
-    .refine(d => Object.keys(d).length, {message: MESSAGE.INV_DATAOPT})
-    .nullish(),
-})
-/** Type of role's "partial data", typically for updating. */
-export type RoleDataOpt = z.infer<typeof roleSchemaDataOpt>['role']
+/** Zod schema for role's "update data". */
+export const roleSchemaUpdate = updateSchema('role',
+  Object.keys(roleSchemaData.shape.role.omit(roleOmit).shape), roleSchema.shape)
+/** Type of role's "update data". */
+export type RoleUpdate = UpdateWithOp<
+  Omit<z.infer<typeof resSchema>, typeof autos[number] | typeof fkeys[number]>>
 
 /** Zod schema for the "role" response without any relations. */
 export const roleSchemaResNoRelated = resSchema
