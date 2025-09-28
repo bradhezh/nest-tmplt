@@ -14,7 +14,7 @@ export class UsersSvc {
   constructor(private prismaSvc: PrismaSvc) {}
 
   async find(
-    filter?: UserFilter,
+    filter?: NonNullable<UserFilter>,
     profFltr?: ProfFilter, roleFltr?: RoleFilter, itemFltr?: ItemFilter,
     includes?: UserIncs, page?: UserPage,
   ): Promise<UserRes[] | UserListRes> {

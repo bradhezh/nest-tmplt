@@ -1,6 +1,6 @@
 import {Module, forwardRef} from '@nestjs/common'
 
-import {CommonModule} from '@/common'
+import {CommonModule} from '@/common/module'
 import {UsersSvc} from './service'
 import {UsersCtlr} from './controller'
 

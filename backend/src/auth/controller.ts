@@ -3,7 +3,8 @@ import {Controller, Post, Body, HttpCode, HttpStatus} from '@nestjs/common'
 import conf from '@/conf'
 import {Public} from '@/common'
 import {UserDtoIncs, UserDtoData, UsersSvc} from '@/users'
-import {CredentialDto, ProfDtoData} from './dtos'
+import {ProfDtoDataOpt} from '@/profiles'
+import {CredentialDto} from './dtos'
 import {AuthSvc} from './service'
 
 @Controller(`${conf.ep.bkRoot}${conf.ep.auth}`)
@@ -21,7 +22,7 @@ export class AuthCtlr {
 
   @Public(true)
   @Post(`${conf.ep.action.signup}`)
-  async signup(@Body() {user}: UserDtoData, @Body() {profile}: ProfDtoData) {
+  async signup(@Body() {user}: UserDtoData, @Body() {profile}: ProfDtoDataOpt) {
     return this.usersSvc.create(user, profile, [{name: conf.defRole}])
   }
 }

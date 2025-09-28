@@ -1,12 +1,13 @@
+import z from 'zod'
+
+import {message} from '@/const'
 import {
   userSchemaName, UserName, userSchemaKey, UserKey, userSchemaKeys, UserKeys,
-  userSchemaIncs, UserIncs, userSchemaPage, UserPage, userSchemaData, UserData,
-  userSchemaFilter, UserFilter, userSchemaUpdate, UserUpdate,
+  userSchemaIncs, UserIncs, userSchemaPage, UserPage,
+  userSchemaFilter, UserFilter,
+  userSchemaData, UserData, userSchemaUpdate, UserUpdate,
   passwdSchema, Password,
-  profSchemaName, ProfName, profSchemaKey, ProfKey, profSchemaKeys, ProfKeys,
-  profSchemaIncs, ProfIncs, profSchemaPage, ProfPage, profSchemaData, ProfData,
-  profSchemaFilter, ProfFilter, profSchemaUpdate, ProfUpdate,
-} from "@shared/schemas"
+} from '@shared/schemas'
 import {ZodSchema} from '@/common'
 
 @ZodSchema(userSchemaName)
@@ -19,9 +20,36 @@ export class UserDtoKey {
   user?: UserKey
 }
 
+// as a required (nonNull) foreign key for creation (required: nonUndefined)
+@ZodSchema(z.object({
+  user: userSchemaKey.shape.user
+    .refine(d => d != null, {message: message.nonNullish}),
+}))
+export class UserDtoKeyNonNullish {
+  user!: NonNullable<UserKey>
+}
+
+// as a required (nonNull) foreign key for updating (optional)
+@ZodSchema(z.object({
+  user: userSchemaKey.shape.user
+    .refine(d => d !== null, {message: message.nonNull}),
+}))
+export class UserDtoKeyNonNull {
+  user?: NonNullable<UserKey>
+}
+
 @ZodSchema(userSchemaKeys)
 export class UserDtoKeys {
   users?: UserKeys
+}
+
+// for addUsers and rmUsers
+@ZodSchema(z.object({
+  users: userSchemaKeys.shape.users
+    .refine(d => d != null, {message: message.nonNullish}),
+}))
+export class UserDtoKeysNonNullish {
+  users!: NonNullable<UserKeys>
 }
 
 @ZodSchema(userSchemaIncs)
@@ -29,7 +57,7 @@ export class UserDtoIncs {
   includes?: UserIncs
 }
 
-/** with default */
+// with default
 @ZodSchema(userSchemaPage)
 export class UserDtoPage {
   page!: UserPage
@@ -38,6 +66,15 @@ export class UserDtoPage {
 @ZodSchema(userSchemaFilter)
 export class UserDtoFilter {
   users?: UserFilter
+}
+
+// as the non-relation filter for oneself
+@ZodSchema(z.object({
+  users: userSchemaFilter.shape.users
+    .refine(d => d !== null, {message: message.nonNull}),
+}))
+export class UserDtoFilterNonNull {
+  users?: NonNullable<UserFilter>
 }
 
 @ZodSchema(userSchemaData)
@@ -53,45 +90,4 @@ export class UserDtoUpdate {
 @ZodSchema(passwdSchema)
 export class PasswdDto {
   password!: Password
-}
-
-@ZodSchema(profSchemaName)
-export class ProfDtoName {
-  name!: ProfName
-}
-
-@ZodSchema(profSchemaKey)
-export class ProfDtoKey {
-  profile?: ProfKey
-}
-
-@ZodSchema(profSchemaKeys)
-export class ProfDtoKeys {
-  profiles?: ProfKeys
-}
-
-@ZodSchema(profSchemaIncs)
-export class ProfDtoIncs {
-  includes?: ProfIncs
-}
-
-/** with default */
-@ZodSchema(profSchemaPage)
-export class ProfDtoPage {
-  page!: ProfPage
-}
-
-@ZodSchema(profSchemaFilter)
-export class ProfDtoFilter {
-  profiles?: ProfFilter
-}
-
-@ZodSchema(profSchemaData)
-export class ProfDtoData {
-  profile!: ProfData
-}
-
-@ZodSchema(profSchemaUpdate)
-export class ProfDtoUpdate {
-  profile?: ProfUpdate
 }

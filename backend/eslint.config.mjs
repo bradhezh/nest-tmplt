@@ -19,7 +19,7 @@ export default tseslint.config({
     'no-trailing-spaces': 'warn',
     'linebreak-style': ['warn', 'unix'],
     'indent': ['warn', 2],
-    'quotes': ['warn', 'single'],
+    'quotes': ['error', 'single'],
     'semi': ['warn', 'never'],
     'eqeqeq': 'warn',
     'no-constant-condition': 'warn',

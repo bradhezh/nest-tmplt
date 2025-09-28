@@ -1,4 +1,4 @@
-import {idSchema, Id} from "@shared/schemas"
+import {idSchema, Id} from '@shared/schemas'
 import {ZodSchema} from './decorators'
 
 @ZodSchema(idSchema)

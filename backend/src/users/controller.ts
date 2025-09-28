@@ -6,10 +6,11 @@ import type {MongoAbility} from '@casl/ability'
 
 import conf from '@/conf'
 import {Ability, IdDto} from '@/common'
+import {ProfDtoFilter} from '@/profiles'
 import {RoleDtoFilter} from '@/roles'
 import {ItemDtoFilter} from '@/items'
 import {
-  UserDtoName, UserDtoIncs, UserDtoPage, UserDtoFilter, ProfDtoFilter,
+  UserDtoName, UserDtoIncs, UserDtoPage, UserDtoFilterNonNull,
 } from './dtos'
 import {UsersSvc} from './service'
 
@@ -21,7 +22,7 @@ export class UsersCtlr {
   @Post(`${conf.ep.action.search}`)
   async find(
     @Ability() ability: MongoAbility,
-    @Body() {users}: UserDtoFilter, @Body() {profiles}: ProfDtoFilter,
+    @Body() {users}: UserDtoFilterNonNull, @Body() {profiles}: ProfDtoFilter,
     @Body() {roles}: RoleDtoFilter, @Body() {items}: ItemDtoFilter,
     @Body() {includes}: UserDtoIncs, @Body() {page}: UserDtoPage,
   ) {
@@ -32,14 +33,24 @@ export class UsersCtlr {
   }
 
   @Get(`${conf.ep.param.byId}`)
-  async findOne(@Param() {id}: IdDto, @Query() {includes}: UserDtoIncs) {
+  async findOne(
+    @Ability() ability: MongoAbility,
+    @Param() {id}: IdDto, @Query() {includes}: UserDtoIncs,
+  ) {
+    if (!ability.can(conf.perm.action.read, conf.perm.subject.user)) {
+      throw new ForbiddenException()
+    }
     return this.usersSvc.findOne({id}, includes)
   }
 
   @Get(`${conf.ep.param.byName}`)
   async findOneByName(
+    @Ability() ability: MongoAbility,
     @Param() {name: username}: UserDtoName, @Query() {includes}: UserDtoIncs,
   ) {
+    if (!ability.can(conf.perm.action.read, conf.perm.subject.user)) {
+      throw new ForbiddenException()
+    }
     return this.usersSvc.findOne({username}, includes)
   }
 }

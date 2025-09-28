@@ -2,7 +2,7 @@ import {Module} from '@nestjs/common'
 import {JwtModule} from '@nestjs/jwt'
 
 import conf from '@/conf'
-import {UsersModule} from '@/users'
+import {UsersModule} from '@/users/module'
 import {AuthSvc} from './service'
 import {AuthCtlr} from './controller'
 

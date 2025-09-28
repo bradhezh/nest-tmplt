@@ -3,7 +3,7 @@ import {
 } from '@nestjs/common'
 import {APP_GUARD, APP_PIPE, APP_FILTER} from '@nestjs/core'
 
-import {UsersModule} from '@/users'
+import {UsersModule} from '@/users/module'
 import {PrismaSvc} from './services'
 import {AbilityFactoryCasl} from './factories'
 import {ReqLogger, frRoutes} from './middleware'

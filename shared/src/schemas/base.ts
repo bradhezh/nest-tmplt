@@ -122,11 +122,16 @@ const opSchema = (schema: ZodTypeAny, operators: Operators) => {
   ])
 }
 type Defined<T> = T extends undefined ? never : T
-type WithOp<T, O extends Operators> = {
+type WithCondOp<T, O extends Operators> = {
   [K in keyof Partial<T>]: Defined<T[K]> | Partial<{
     [KO in O[number]['name']]: KO extends 'in'
     ? [NonNullable<T[K]>, ...NonNullable<T[K]>[]] : NonNullable<T[K]>
   }>
+}
+type WithUpdateOp<T, O extends Operators> = {
+  [K in keyof Partial<T>]: T[K] extends number
+  ? Defined<T[K]> | Partial<{[KO in O[number]['name']]: number}>
+  : Defined<T[K]>
 }
 
 // Zod schema for "filter"
@@ -143,8 +148,8 @@ export const filterSchema = (
 }
 /** Type of "filter". */
 export type Filter = z.infer<ReturnType<typeof filterSchema>>[string]
-export type FilterWithOp<T> = WithOp<T, typeof condOps>
-  | {OR: [WithOp<T, typeof condOps>, ...WithOp<T, typeof condOps>[]]}
+export type FilterWithOp<T> = WithCondOp<T, typeof condOps>
+  | {OR: [WithCondOp<T, typeof condOps>, ...WithCondOp<T, typeof condOps>[]]}
   | null | undefined
 
 export const updateSchema = (
@@ -154,12 +159,12 @@ export const updateSchema = (
     [data]: z.object(
       Object.fromEntries(fields.map(e => [e, opSchema(shape[e], updateOps)])))
       .partial().refine(d => Object.keys(d).length, {message: message.nonEmpty})
-      .nullish(),
+      .optional(),
   })
 }
 /** Type of "update data". */
 export type Update = z.infer<ReturnType<typeof updateSchema>>[string]
-export type UpdateWithOp<T> = WithOp<T, typeof updateOps> | null | undefined
+export type UpdateWithOp<T> = WithUpdateOp<T, typeof updateOps> | undefined
 
 // Zod schema for the "list" response
 export const listSchema = (schema: ZodTypeAny) => {

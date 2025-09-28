@@ -8,7 +8,7 @@ export function ZodSchema(schema: ZodTypeAny): ClassDecorator {
   return (target) => Reflect.defineMetadata(zodSchema, schema, target)
 }
 
-export function getZodSchema(target: any): ZodTypeAny | undefined {
+export function getZodSchema(target: object): ZodTypeAny | undefined {
   return Reflect.getMetadata(zodSchema, target)
 }
 
