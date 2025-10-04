@@ -2,7 +2,7 @@ import {INestApplication} from '@nestjs/common'
 import {Test} from '@nestjs/testing'
 import request from 'supertest'
 
-import {AppModule} from './app.module'
+import {AppModule} from '@/app.module'
 
 describe('users', () => {
   let app: INestApplication
@@ -18,7 +18,7 @@ describe('users', () => {
     return request(app.getHttpServer())
       .post('/api/users/search')
       .send({})
-      .expect(403)
+      .expect(401)
   })
 
   afterAll(async () => {

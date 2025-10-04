@@ -4,9 +4,9 @@ export * from '@shared/const'
 const conf = {
   ep: {
     bkRoot: '/api',
-    users: '/users',
-    items: '/items',
-    auth: '/auth',
+    users: 'users',
+    items: 'items',
+    auth: 'auth',
     action: {
       login: 'login',
       logout: 'logout',

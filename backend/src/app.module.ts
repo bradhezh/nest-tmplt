@@ -5,7 +5,5 @@ import {UsersModule} from '@/users/module'
 import {AuthModule} from '@/auth/module'
 import {ItemsModule} from '@/items/module'
 
-@Module({
-  imports: [CommonModule, UsersModule, AuthModule, ItemsModule],
-})
+@Module({imports: [CommonModule, UsersModule, AuthModule, ItemsModule]})
 export class AppModule {}

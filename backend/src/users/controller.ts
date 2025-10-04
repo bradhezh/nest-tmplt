@@ -2,7 +2,7 @@ import {
   Controller, Get, Post, Param, Query, Body,
   HttpCode, HttpStatus, ForbiddenException,
 } from '@nestjs/common'
-import type {MongoAbility} from '@casl/ability'
+import {MongoAbility} from '@casl/ability'
 
 import conf from '@/conf'
 import {Ability, IdDto} from '@/common'
@@ -14,7 +14,7 @@ import {
 } from './dtos'
 import {UsersSvc} from './service'
 
-@Controller(`${conf.ep.bkRoot}${conf.ep.users}`)
+@Controller(`${conf.ep.bkRoot}/${conf.ep.users}`)
 export class UsersCtlr {
   constructor(private usersSvc: UsersSvc) {}
 

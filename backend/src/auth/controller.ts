@@ -7,7 +7,7 @@ import {ProfDtoDataOpt} from '@/profiles'
 import {CredentialDto} from './dtos'
 import {AuthSvc} from './service'
 
-@Controller(`${conf.ep.bkRoot}${conf.ep.auth}`)
+@Controller(`${conf.ep.bkRoot}/${conf.ep.auth}`)
 export class AuthCtlr {
   constructor(private usersSvc: UsersSvc, private authSvc: AuthSvc) {}
 

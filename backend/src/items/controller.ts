@@ -2,8 +2,7 @@ import {
   Controller, Get, Post, Patch, Delete, Param, Query, Body,
   HttpCode, HttpStatus, ForbiddenException,
 } from '@nestjs/common'
-import type {MongoAbility} from '@casl/ability'
-import {subject} from '@casl/ability'
+import {MongoAbility, subject} from '@casl/ability'
 
 import conf from '@/conf'
 // "type" must be used here to enforce the import being removed in the compiled
@@ -19,7 +18,7 @@ import {
 } from './dtos'
 import {ItemsSvc} from './service'
 
-@Controller(`${conf.ep.bkRoot}${conf.ep.items}`)
+@Controller(`${conf.ep.bkRoot}/${conf.ep.items}`)
 export class ItemsCtlr {
   constructor(private itemsSvc: ItemsSvc) {}
 

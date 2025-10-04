@@ -3,7 +3,7 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config({
-  ignores: ['dist', 'build', '**/prisma/client', 'bak'],
+  ignores: ['dist', 'build', '**/prisma/client'],
 }, {
   extends: [js.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
   files: ['**/*.ts'],
@@ -19,7 +19,7 @@ export default tseslint.config({
     'no-trailing-spaces': 'warn',
     'linebreak-style': ['warn', 'unix'],
     'indent': ['warn', 2],
-    'quotes': ['error', 'single'],
+    'quotes': ['warn', 'single'],
     'semi': ['warn', 'never'],
     'eqeqeq': 'warn',
     'no-constant-condition': 'warn',

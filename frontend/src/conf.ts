@@ -4,7 +4,7 @@ const conf = {
   ...common,
 
   // injected by vite
-  ENV: import.meta.env,
+  env: import.meta.env,
 } as const
 
 export default conf
