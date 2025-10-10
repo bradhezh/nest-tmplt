@@ -1,13 +1,14 @@
 import {
   Module, forwardRef, NestModule, MiddlewareConsumer,
 } from '@nestjs/common'
-import {APP_GUARD, APP_PIPE, APP_FILTER} from '@nestjs/core'
+import {APP_GUARD, APP_INTERCEPTOR, APP_PIPE, APP_FILTER} from '@nestjs/core'
 
 import {UsersModule} from '@/users/module'
 import {PrismaSvc} from './services'
 import {AbilityFactoryCasl} from './factories'
 import {ReqLogger, frRoutes} from './middleware'
 import {AuthGuard} from './guard'
+import {Interceptor} from './interceptor'
 import {ValidationPipeZod} from './pipe'
 import {Filter} from './filter'
 
@@ -18,6 +19,9 @@ import {Filter} from './filter'
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    }, {
+      provide: APP_INTERCEPTOR,
+      useClass: Interceptor,
     }, {
       provide: APP_PIPE,
       useClass: ValidationPipeZod,

@@ -31,6 +31,9 @@ const conf = {
   /** Flexible or sensitive configuration included in .env: should be set in the
     cloud but unnecessary in CICD pipelines. */
   tokenExpire: Number(process.env.TOKEN_EXPIRE) || 604800,
+  /** Flexible or sensitive configuration included in .env: should be set in the
+    cloud but unnecessary in CICD pipelines. */
+  timeout: Number(process.env.TIMEOUT) || 5000,
 
   version: {
     no: 0,
