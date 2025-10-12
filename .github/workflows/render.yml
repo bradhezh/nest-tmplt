@@ -54,5 +54,5 @@ jobs:
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
           publish_dir: ./docs
-          external_repository: bradhezh/monorepo-tmplt-doc
+          external_repository: bradhezh/nest-tmplt-doc
           publish_branch: main
