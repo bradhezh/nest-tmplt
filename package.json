@@ -9,7 +9,7 @@
     "migrate": "pnpm --filter backend migrate",
     "migrate:reset": "pnpm --filter backend migrate:reset",
     "copy-dist": "pnpm dlx rimraf backend/dist && pnpm dlx cpx \"frontend/dist/**/*\" backend/dist",
-    "build": "pnpm -r build && pnpm copy-dist",
+    "build": "pnpm --filter=backend build && pnpm --filter=frontend build && pnpm copy-dist",
     "start": "pnpm --filter backend start",
     "start:debug": "pnpm --filter backend start:debug",
     "test": "pnpm -r test",
