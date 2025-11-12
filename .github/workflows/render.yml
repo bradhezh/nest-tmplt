@@ -22,11 +22,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22.21.1
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 10
+          version: 10.10.0
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile
       - name: Build

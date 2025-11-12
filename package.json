@@ -18,5 +18,8 @@
     "lint": "pnpm -r lint",
     "docs": "pnpm dlx rimraf docs && pnpm -r docs && pnpm dlx cpx \"doc.{html,css}\" docs && pnpm dlx renamer --find \"doc\" --replace \"index\" docs/doc.html"
   },
-  "packageManager": "pnpm@10.10.0"
+  "volta": {
+    "node": "22.21.1",
+    "pnpm": "10.10.0"
+  }
 }
