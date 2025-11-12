@@ -1,8 +1,8 @@
-FROM node:22.21.1
+FROM node:24.11.1
 
 WORKDIR /usr/app
 
-RUN corepack enable && corepack prepare pnpm@10.10.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.21.0 --activate
 
 COPY . .
 

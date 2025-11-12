@@ -19,7 +19,7 @@
     "docs": "pnpm dlx rimraf docs && pnpm -r docs && pnpm dlx cpx \"doc.{html,css}\" docs && pnpm dlx renamer --find \"doc\" --replace \"index\" docs/doc.html"
   },
   "volta": {
-    "node": "22.21.1",
-    "pnpm": "10.10.0"
+    "node": "24.11.1",
+    "pnpm": "10.21.0"
   }
 }
