@@ -8,7 +8,7 @@ COPY . .
 
 RUN pnpm i --frozen-lockfile
 RUN pnpm build
-RUN pnpm i --frozen-lockfile --prod
+RUN CI=true pnpm i --frozen-lockfile --prod
 
 USER node
 
